@@ -3,8 +3,20 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    apiKey: 'AIzaSyCI9cGqHXjzNyjs-BlYifjodEDYW7_X4PY',
+    authDomain: 'onboarding-8d6aa.firebaseapp.com',
+    projectId: 'onboarding-8d6aa',
+    storageBucket: 'onboarding-8d6aa.appspot.com',
+    messagingSenderId: '267154360178',
+    appId: '1:267154360178:web:04dae7941a05204b437feb',
+    measurementId: 'G-N6FNRBK0SM',
+  },
 };
+export const SSL_KEY_PATH="src/ssl-key.pem"
+export const SSL_CERT_PATH="src/ssl-cert.pem"
 
 /*
  * For easier debugging in development mode, you can import the following file
