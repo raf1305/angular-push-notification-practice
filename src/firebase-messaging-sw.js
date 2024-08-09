@@ -1,13 +1,76 @@
-// self.addEventListener('notificationclick', function(event) {
-//   console.log("Event",Event)
-//   console.log('[firebase-messaging-sw.js] Notification click Received.');
-// });
+self.addEventListener('notificationshow', (event) => {
+  console.log('Notification shown:', event.notification);
+  
+    fetch('https://ahrtest.requestcatcher.com', {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ Event: 'Show' })
+    }).then(() => {
+      console.log('Notification show event sent successfully.');
+    }).catch((error) => {
+      console.error('Error sending notification show event:', error);
+    })
+    event.notification.close();
+    event.waitUntil(clients.matchAll({
+      type: 'window'
+    }).then((clientList) => {
+      if (clients.openWindow) {
+        return clients.openWindow('/');
+      }
+    }));
+  
+});
+
+// Notification click event listener
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked:', event.notification);
+  fetch('https://ahrtest.requestcatcher.com', {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({ Event: 'Clicked' })
+  }).then(() => {
+    console.log('Notification click event sent successfully.');
+  }).catch((error) => {
+    console.error('Error sending notification click event:', error);
+  });
+  event.notification.close();
+  event.waitUntil(clients.matchAll({
+    type: 'window'
+  }).then((clientList) => {
+    if (clients.openWindow) {
+      return clients.openWindow('/');
+    }
+  }));
+});
+
+// Notification close event listener
+self.addEventListener('notificationclose', (event) => {
+  console.log('Notification closed:', event.notification);
+  fetch('https://ahrtest.requestcatcher.com', {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({ Event: 'Closed' })
+  }).then(() => {
+    console.log('Notification close event sent successfully.');
+  }).catch((error) => {
+    console.error('Error sending notification close event:', error);
+  });
+  event.notification.close();
+  event.waitUntil(clients.matchAll({
+    type: 'window'
+  }).then((clientList) => {
+    if (clients.openWindow) {
+      return clients.openWindow('/');
+    }
+  }));
+});
 
 
+// Import Firebase scripts
 importScripts('https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/7.5.0/firebase-messaging.js');
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCI9cGqHXjzNyjs-BlYifjodEDYW7_X4PY",
   authDomain: "onboarding-8d6aa.firebaseapp.com",
@@ -18,12 +81,11 @@ const firebaseConfig = {
   measurementId: "G-N6FNRBK0SM"
 };
 
-
-
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 const messaging = firebase.messaging();
 
+// Handle background messages
 messaging.setBackgroundMessageHandler(function(payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   const notificationTitle = payload.notification.title;
@@ -31,87 +93,9 @@ messaging.setBackgroundMessageHandler(function(payload) {
     body: payload.notification.body,
     icon: payload.notification.icon
   };
+  
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-
-// // self.addEventListener('notificationclick', (event) => {
-// //   const notification = event.notification;
-// //   const clickData = notification.data && notification.data.url; // Assuming you send a 'url' property
-// //   console.log("Notification Clicked")
-// //   if (clickData) {
-// //     window.open(clickData, '_blank');
-// //   } else {
-// //     // Handle notification click without data (optional)
-// //     event.waitUntil(clients.get(window.location.pathname).then(client => client.focus()));
-// //   }
-// // });
-
-
-
-
-// // "use strict";
-
-// // var url = [];
-// // var count = 0;
-
-// // self.addEventListener('install', function(event) {
-// //   console.log("Installing")
-// //   event.waitUntil(self.skipWaiting()); //will install the service worker
-// // });
-
-// // self.addEventListener('activate', function(event) {
-// //   console.log("Activated")
-// //   event.waitUntil(self.clients.claim()); //will activate the serviceworker
-// // });
-
-// // // Register event listener for the 'notificationclick' event.
-// // self.addEventListener('notificationclick', function(event) {
-// //   console.log("Clicked")
-// //   event.notification.close();
-
-// //   event.waitUntil(
-// //     clients.matchAll({
-// //       type: "window"
-// //     })
-// //     .then(function(clientList) {
-
-// //       if (clients.openWindow) {
-// //         var c = count;
-// //         count++;
-// //         return clients.openWindow(url[c]);
-// //       }
-// //     })
-// //   );
-
-// // });
-
-
-// // self.addEventListener('push', function(event) {
-// //   console.log("Push")
-// //   event.waitUntil(
-// //     self.registration.pushManager.getSubscription()
-// //     .then(function(subscription) {
-
-// //       console.log("subscription", subscription);
-
-// //       var payload = event.data ? JSON.parse(event.data.text()) : {
-// //         title: 'Cronj IT Technoliges Pvt Ltd',
-// //         body: 'CronJ combines the power of creativity and experience to employ a highly skilled team of Information Technology professionals who provide high-quality, high-value custom IT solutions to a variety of business enterprises.',
-// //         icon: 'https://static.cronj.com/img/logos/cronj-logo.png',
-// //         url: 'https://www.cronj.com'
-// //       };
-
-
-// //       url.push(payload.url);
-// //       return self.registration.showNotification(payload.title, {
-// //         body: payload.body,
-// //         icon: payload.icon,
-// //         tag: payload.url + payload.body + payload.icon + payload.title
-// //       });
-
-
-// //     })
-// //   );
-// // });
+// Notification show event listener
 

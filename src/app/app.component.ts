@@ -77,21 +77,39 @@ export class AppComponent implements OnInit {
     //   console.log('Message received. ', payload); 
     //   // ... 
     // });
-
+    
   }
 
-  // registerServiceWorker() {
-  //   return navigator.serviceWorker
-  //     .register('/firebase-messaging-sw.js')
-  //     .then(function (registration) {
-  //       console.log('Service worker successfully registered.');
-  //       console.log(registration);
-  //       return registration;
-  //     })
-  //     .catch(function (err) {
-  //       console.error('Unable to register service worker.', err);
-  //     });
-  // }
+  registerServiceWorker() {
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js')
+      .then(function (registration) {
+        console.log('Service worker successfully registered.');
+        const title = 'Actions Notification';
+
+        const notificationOptions = {
+          body: "Body",
+        };
+
+        registration.showNotification(title, notificationOptions);
+        registration.addEventListener('notificationclick', function(event) {
+          console.log("Event",Event)
+          console.log('App Notification click Received.');
+        });
+        registration.addEventListener('notificationshow', function(event) {
+          console.log("Event",Event)
+          console.log('App Notification show Received.');
+        });
+
+
+        // registration.unregister().then(function(unregister){
+        //   console.log('Service worker successfully unregistered.');
+        // });
+      })
+      .catch(function (err) {
+        console.error('Unable to register service worker.', err);
+      });
+  }
 
   // askPermission() {
   //   return new Promise(function (resolve, reject) {
@@ -114,6 +132,7 @@ export class AppComponent implements OnInit {
 
 
   onRequClick(){
+    // this.registerServiceWorker()
     getToken(messaging, { vapidKey: vapidPublicKey }).then((currentToken) => {
       console.log(currentToken)
       if (currentToken) {
